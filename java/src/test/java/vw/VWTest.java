@@ -12,6 +12,12 @@ import static org.junit.Assert.*;
  * Created by jmorra on 11/24/14.
  */
 public class VWTest {
+
+    /**
+     * Model created with paste -d '\n' <(jot -b '-1 |' 100) <(jot -b '1 |' 100) | vw --quiet --loss_function logistic --link logistic -f logistic.test.model
+     */
+    private static final String LogisticModelPath = "src/test/resources/logistic.test.model";
+
     private String houseModel;
     private final String heightData = "|f height:0.23 weight:0.25 width:0.05";
     private VW houseScorer;
@@ -192,5 +198,33 @@ public class VWTest {
         float[] expectedTestPreds = new float[]{4, 4};
         vw.close();
         assertArrayEquals(expectedTestPreds, testPreds, 0.000001f);
+    }
+
+    /**
+     * Test that we can recover from specifying a link when it is already encoded in the binary VW model file.
+     * @throws IOException when issues arise getting model location.
+     */
+    @Test public void testLinkFunctionRecovery() throws IOException {
+        final String example = "";
+        final float expected = 0.504197f; // From testing VW on CLI.
+        final String modelPath = new File(LogisticModelPath).getCanonicalPath();
+
+        // Without a specified link.
+        final float withoutLink = new VW(logisticModelParams(false) + " -i " + modelPath).predict(example);
+        assertEquals(expected, withoutLink, 1.e-6);
+
+        // This should not fail
+        // With a specified link is the same as without a specified link.
+        try {
+            final float withLink = new VW(logisticModelParams(true) + " -i " + modelPath).predict(example);
+            assertEquals(withoutLink, withLink, 1.e-6);
+        }
+        catch(Throwable t) {
+            fail("Should not throw an exception.");
+        }
+    }
+
+    private static String logisticModelParams(final boolean withLink) {
+        return "--quiet --loss_function logistic " + (withLink ? "--link logistic " : "");
     }
 }

@@ -144,8 +144,7 @@ install_cask_app "virtualbox"
 install_brew_app "docker-machine"
 install_brew_app "docker"
 
-# This command needs to be run ONCE on the machine to make it ready to go
-# docker-machine create --driver virtualbox default
+docker-machine create --driver virtualbox default
 eval "$(docker-machine env default)"
 
 run_docker "ubuntu:12.04" "$ubuntu_12"

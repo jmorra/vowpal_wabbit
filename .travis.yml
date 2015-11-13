@@ -13,7 +13,8 @@ before_install:
   
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install caskroom/cask/brew-cask; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cask install virtualbox; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap caskroom/versions; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cask install virtualbox43691406; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install docker; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install docker-machine; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then docker-machine --native-ssh -D create --driver virtualbox default; fi
